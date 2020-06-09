@@ -165,7 +165,7 @@ module cpu5arm(reset, clk, iaddrbus, ibus, daddrbus, databus);
      );
      immDecoder imm(
         .ibus(instbusToDecoder),
-        // tells us how we should decode the IMM val {ALU (but not for SW), D, MOV, CondBranch, BranchIMM}
+        // tells us how we should decode the IMM val {ALU (but not for SW), D, MOV, CondBranch, BranchIMM}                  
         .extOp({AluInsDecToIdex[0]&&!loadInsDecToIdex[1],loadInsDecToIdex[1],shiftInsDecToIdex[2],checkBranchDecToCheckBranch[0], cbOrBDecToCheckBranch}),
         .out(immDecoderToIdex)
      );
@@ -304,7 +304,7 @@ module shifter(a,b,s,d);
     input [63:0] a, b;
     input s;
     output [63:0] d;
-    assign d = s ? a<<b : a>>>b;
+    assign d = s ? a>>>b : a<<b;
 endmodule
 
 //MUX 
@@ -851,9 +851,9 @@ module opcodeDec(ibus,AluInst,shiftIns, checkBranch, equalizer, loadIns, cbOrB);
                                 case(ibus[31:24])
                                     // CB Format
                                     // CBNZ                                                                         11 - CBNZ                // to select CB format                                              
-                                    8'b10110101: begin AluInst=6'b000000; shiftIns=3'b000; checkBranch=3'b000; equalizer=2'b11; loadIns=2'b00; cbOrB=1'b0; end
+                                    8'b10110101: begin AluInst=6'b000000; shiftIns=3'b000; checkBranch=3'b001; equalizer=2'b11; loadIns=2'b00; cbOrB=1'b0; end
                                     // CBZ                                                                          10 - CBZ
-                                    8'b10110100: begin AluInst=6'b000000; shiftIns=3'b000; checkBranch=3'b000; equalizer=2'b10; loadIns=2'b00; cbOrB=1'b0; end
+                                    8'b10110100: begin AluInst=6'b000000; shiftIns=3'b000; checkBranch=3'b001; equalizer=2'b10; loadIns=2'b00; cbOrB=1'b0; end
                                     // BEQ                                                   beq = {00 , en}
                                     8'b01010101:  begin AluInst=6'b000000; shiftIns=3'b000; checkBranch=3'b001; equalizer=2'b00; loadIns=2'b00; cbOrB=1'b0; end
                                     // BNE                                                   bne = {01 , en}
